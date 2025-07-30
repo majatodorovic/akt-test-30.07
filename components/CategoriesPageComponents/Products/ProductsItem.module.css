@@ -1,0 +1,14 @@
+@media (min-width: 1024px) {
+  .item:hover > .more {
+    display: flex;
+  }
+}
+
+.clamp {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  min-height: 50px;
+}
