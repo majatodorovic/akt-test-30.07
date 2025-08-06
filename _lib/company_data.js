@@ -22,7 +22,7 @@ export const company_data = {
       name: "Stefan Tekstil - Novi Sad",
       telephone: "021 / 6337 910",
       email: "nsstefan@stefantekstil.rs",
-      street_address: "Ćirila i Metodija 42A",
+      street_address: "Generala Vasića br.2",
       city: "Novi Sad",
       postal_code: "21000",
       address_country: "RS",

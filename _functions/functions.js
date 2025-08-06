@@ -27,7 +27,7 @@ export const handleCategoryRobots = (strana, filteri, sort, viewed, robots) => {
   }
 };
 
-export const generateProductSchema = (product, product_gallery, canonical) => {
+export const generateProductSchema = (product, gallery, canonical) => {
   if (product) {
     const {
       data: {
@@ -43,7 +43,6 @@ export const generateProductSchema = (product, product_gallery, canonical) => {
         },
       },
     } = product;
-    const { gallery } = product_gallery;
 
     const min_defined = price?.min?.price_defined;
     const max_defined = price?.max?.price_defined;
@@ -84,7 +83,7 @@ export const generateProductSchema = (product, product_gallery, canonical) => {
       "@context": "https://schema.org/",
       "@type": "Product",
       name: name,
-      image: gallery?.[0]?.image,
+      image: gallery?.[0]?.image_data?.url,
       sku: sku,
       offers: {
         "@type": "Offer",

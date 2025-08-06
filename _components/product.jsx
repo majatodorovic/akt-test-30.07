@@ -1,9 +1,6 @@
-import { list } from "@/app/api/api";
-import ProductDetailsSlider from "@/components/ProductDetailsSlider/ProductDetailsSlider";
-import MobileImageSlider from "@/components/MobileImageSlider/MobileImageSlider";
+import { list, fetch } from "@/app/api/api";
 import { Breadcrumbs } from "@/_components/breadcrumbs";
 import { Suspense } from "react";
-import { Description } from "@/_components/desc";
 import ProductInfo from "@/components/ProductInfo/ProductInfo";
 import ProductsSlider from "@/components/ProductsSlider/ProductsSlider";
 import ProductReviewsMarks from "@/components/ProductReviews/Marks/ProductReviewsMarks";
@@ -16,50 +13,30 @@ const getCrossSell = async (slug) => {
   }).then((response) => response?.payload);
 };
 
+const getProductImages = async (id) => {
+  return await fetch(`/product-details/gallery/${id}`).then(
+    (response) => response?.payload?.gallery,
+  );
+};
+
 const ProductPage = async ({ id, path, category_id, canonical }) => {
   const cross_sell = await getCrossSell(path[path?.length - 1]);
+
+  const productGallery = await getProductImages(id);
 
   return (
     <>
       <Suspense>
         <Breadcrumbs slug={path} categoryId={category_id} id={id} />
       </Suspense>
-      <div className="mt-5 sm:mt-10 w-[95%] lg:w-[85%] mx-auto">
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-x-10">
-          <div className="col-span-2 lg:col-span-3 max-md:hidden">
-            <Suspense
-              fallback={
-                <div
-                  className={`h-[40rem] bg-slate-300 w-full aspect-square animate-pulse`}
-                />
-              }
-            >
-              <ProductDetailsSlider slug={path} id={id} />
-            </Suspense>
-          </div>
-          <div className="col-span-2 md:hidden">
-            <Suspense
-              fallback={
-                <div
-                  className={`h-[20rem] bg-slate-300 w-full aspect-square animate-pulse`}
-                />
-              }
-            >
-              <MobileImageSlider slug={path} id={id} />
-            </Suspense>
-          </div>
-          <Suspense>
-            <ProductInfo
-              slug={path}
-              categoryId={category_id}
-              canonical={canonical}
-              id={id}
-            />
 
-            <Description slug={path} id={id} />
-          </Suspense>
-        </div>
-      </div>
+      <ProductInfo
+        path={path}
+        category_id={category_id}
+        canonical={canonical}
+        id={id}
+        productGallery={productGallery}
+      />
 
       {/* These are 3 review components (Marks, Comments, Q&A)
         Each one works separately. 

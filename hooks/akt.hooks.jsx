@@ -555,27 +555,14 @@ export const useProductThumb = ({ slug, id, categoryId = "*" }) => {
 
 export const useProductSticker = ({ id }) => {
   return useSuspenseQuery({
-    queryKey: ["productThumb", id ? id : null],
+    queryKey: ["productSticker", id ? id : null],
     queryFn: async () => {
-      return await GET(`/product-details/gallery/${id}`).then((res) => {
+      return await GET(`/product-details/stickers/${id}`).then((res) => {
         return res?.payload?.stickers;
       });
     },
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-  });
-};
-
-//hook za dobijanje galerije na detaljnoj strani
-export const useProductGallery = ({ id }) => {
-  return useSuspenseQuery({
-    queryKey: ["productGallery", id],
-    queryFn: async () => {
-      return await GET(`/product-details/gallery/${id}`).then((res) => {
-        return res?.payload?.gallery;
-      });
-    },
-    refetchOnWindowFocus: false,
   });
 };
 

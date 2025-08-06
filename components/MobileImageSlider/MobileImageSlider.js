@@ -1,12 +1,56 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { convertHttpToHttps } from "@/helpers/convertHttpToHttps";
-import { useProductGallery } from "@/hooks/akt.hooks";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { getCurrentGalleryByVariantKeys } from "@/helpers/gallery";
 
-const MobileImageSlider = ({ id }) => {
-  const { data: images } = useProductGallery({ id });
+const MobileImageSlider = ({ variantKeyArray, productGallery, id }) => {
+  let variantKeyString = "";
+  variantKeyArray?.forEach((item, index) => {
+    variantKeyString += `${item.attribute_key}:${item.value_key}`;
+    if (index + 1 !== variantKeyArray?.length) variantKeyString += ";";
+  });
+
+  const currentGallery = variantKeyArray
+    ? getCurrentGalleryByVariantKeys({
+        variantKeyString,
+        productGallery,
+      })
+    : [];
+
+  const [gallery, setGallery] = useState(
+    productGallery?.length > 0
+      ? currentGallery && currentGallery?.length > 0
+        ? currentGallery
+        : productGallery
+      : [
+          {
+            image_data: {
+              url: "/placeholder.png",
+              description: {
+                alt: "nimaco",
+              },
+            },
+          },
+        ],
+  );
+
+
+  useEffect(() => {
+    if (variantKeyArray) {
+      const currentGallery = variantKeyArray
+        ? getCurrentGalleryByVariantKeys({
+            variantKeys: variantKeyArray,
+            productGallery,
+          })
+        : [];
+
+      if (currentGallery?.length > 0) {
+        setGallery(currentGallery);
+      }
+    }
+  }, [variantKeyArray]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiperData, setSwiperData] = useState(null);
@@ -25,12 +69,18 @@ const MobileImageSlider = ({ id }) => {
         direction={`horizontal`}
         slidesPerView={1}
       >
-        {images?.map(({ image, id }) => {
+        {gallery?.map((image, index) => {
           return (
-            <SwiperSlide key={id} className={`!h-auto`}>
+            <SwiperSlide key={index} className={`!h-auto`}>
               <Image
-                src={convertHttpToHttps(image)}
-                alt={`Stefan Tekstil`}
+                src={convertHttpToHttps(image?.image_data?.url)}
+                alt={
+                  image?.image_data?.description?.alt
+                    ? image?.image_data?.description?.alt
+                    : image?.image_data?.file_data?.filename
+                      ? image?.image_data?.file_data?.filename
+                      : "stefan tekstil shop"
+                }
                 width={0}
                 height={0}
                 sizes={`100vw`}
@@ -43,7 +93,7 @@ const MobileImageSlider = ({ id }) => {
           <div
             className={`absolute z-10 bottom-3 mx-auto flex flex-row left-0 right-0 gap-3 justify-center`}
           >
-            {images?.map((i, x) => {
+            {gallery?.map((i, x) => {
               return (
                 <span
                   key={x}

@@ -262,11 +262,12 @@ const ContactPage = () => {
                 <div className="flex flex-col max-lg:items-center max-lg:justify-center max-lg:text-center gap-0">
                   <h1 className="text-base font-medium">Novi Sad</h1>
                   <Link
-                    href={`https://www.google.com/maps/place/%D0%8B%D0%B8%D1%80%D0%B8%D0%BB%D0%B0+%D0%B8+%D0%9C%D0%B5%D1%82%D0%BE%D0%B4%D0%B8%D1%98%D0%B0+42a,+%D0%9D%D0%BE%D0%B2%D0%B8+%D0%A1%D0%B0%D0%B4+21000/@45.2386437,19.8158403,17z/data=!3m1!4b1!4m6!3m5!1s0x475b1025c59f848d:0x20192a17d9430c85!8m2!3d45.23864!4d19.8184152!16s%2Fg%2F11fxf1bp5r?entry=ttu`}
+                    href={`https://www.google.com/maps/place/Generala+Vasića+2,+Veternik/@45.2462193,19.7726135,17z/data=!3m1!4b1!4m6!3m5!1s0x475b11e6ad648157:0x9fd01ae9a6298b80!8m2!3d45.2462193!4d19.7726135!16s%2Fg%2F11mcjc11f5?entry=ttu
+`}
                     target={`_blank`}
                     className="text-sm font-light"
                   >
-                    Ćirila i Metodija 42A
+                    Generala Vasića br.2
                   </Link>
                   <Link href={`tel:0216337910`} className="text-sm font-light">
                     021 / 6337 910

@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper-bundle.css";
 import "swiper/css/free-mode";
@@ -9,13 +9,57 @@ import { FreeMode, Pagination, Thumbs } from "swiper/modules";
 import Image from "next/image";
 import classes from "./styles.module.css";
 import { convertHttpToHttps } from "@/helpers/convertHttpToHttps";
-import { useProductGallery } from "@/hooks/akt.hooks";
+import { getCurrentGalleryByVariantKeys } from "@/helpers/gallery";
 
-const ProductGallery = ({ id }) => {
-  const { data: productGallery } = useProductGallery({ id });
+const ProductGallery = ({ variantKeyArray, productGallery }) => {
+  let variantKeyString = "";
+  variantKeyArray?.forEach((item, index) => {
+    variantKeyString += `${item.attribute_key}:${item.value_key}`;
+    if (index + 1 !== variantKeyArray?.length) variantKeyString += ";";
+  });
+
+  const currentGallery = variantKeyArray
+    ? getCurrentGalleryByVariantKeys({
+        variantKeyString,
+        productGallery,
+      })
+    : [];
+
+  const [gallery, setGallery] = useState(
+    productGallery?.length > 0
+      ? currentGallery && currentGallery?.length > 0
+        ? currentGallery
+        : productGallery
+      : [
+          {
+            image_data: {
+              url: "/placeholder.png",
+              description: {
+                alt: "nimaco",
+              },
+            },
+          },
+        ],
+  );
+
+  useEffect(() => {
+    if (variantKeyArray) {
+      const currentGallery = variantKeyArray
+        ? getCurrentGalleryByVariantKeys({
+            variantKeys: variantKeyArray,
+            productGallery,
+          })
+        : [];
+
+      if (currentGallery?.length > 0) {
+        setGallery(currentGallery);
+      }
+    }
+  }, [variantKeyArray]);
 
   function ImageMagnifier({
     src,
+    alt,
     width,
     height,
     magnifierHeight = 300,
@@ -59,7 +103,7 @@ const ProductGallery = ({ id }) => {
           onMouseLeave={() => {
             setShowMagnifier(false);
           }}
-          alt={src.alt ?? "AKT"}
+          alt={alt ? alt : "AKT"}
         />
 
         <div
@@ -89,14 +133,20 @@ const ProductGallery = ({ id }) => {
   }
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const productImage =
-    productGallery.length > 0 ? (
-      productGallery?.map((image, index) => {
+    gallery?.length > 0 ? (
+      gallery?.map((image, index) => {
         return (
           <SwiperSlide key={index} className="w-full !relative">
             <ImageMagnifier
-              src={convertHttpToHttps(image?.image)}
+              src={convertHttpToHttps(image?.image_data?.url)}
+              alt={
+                image?.image_data?.description?.alt
+                  ? image?.image_data?.description?.alt
+                  : image?.image_data?.file_data?.filename
+                    ? image?.image_data?.file_data?.filename
+                    : "stefan tekstil shop"
+              }
               fill
-              alt="AKT"
               priority
               style={{ objectFit: "cover" }}
             />
@@ -113,14 +163,20 @@ const ProductGallery = ({ id }) => {
       />
     );
 
-  const thumbImage = productGallery?.map((image, index) => {
+  const thumbImage = gallery?.map((image, index) => {
     return (
       <SwiperSlide key={index} className={`!relative h-full w-full`}>
         <Image
-          src={convertHttpToHttps(image?.image)}
+          src={convertHttpToHttps(image?.image_data?.url)}
+          alt={
+            image?.image_data?.description?.alt
+              ? image?.image_data?.description?.alt
+              : image?.image_data?.file_data?.filename
+                ? image?.image_data?.file_data?.filename
+                : "stefan tekstil shop"
+          }
           fill
           priority
-          alt="AKT"
           style={{ objectFit: "cover" }}
           className="cursor-pointer max-md:hidden aspect-square"
         />

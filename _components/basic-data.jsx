@@ -17,7 +17,15 @@ import * as process from "process";
 import { generateProductSchema } from "@/_functions";
 import Specifications from "@/_components/Specifications";
 
-export const BasicData = ({ slug, categoryId, canonical, id }) => {
+export const BasicData = ({
+  slug,
+  categoryId,
+  canonical,
+  id,
+  setProductVariant,
+  productVariant,
+  productGallery,
+}) => {
   const { data: products } = useSuspenseQuery({
     queryKey: ["id", id],
     queryFn: async () => {
@@ -27,24 +35,14 @@ export const BasicData = ({ slug, categoryId, canonical, id }) => {
     },
     refetchOnWindowFocus: false,
   });
-  const { data: productsGallery } = useSuspenseQuery({
-    queryKey: ["gallery_schema", slug],
-    queryFn: async () => {
-      return await get(`/product-details/gallery/${id}`).then(
-        (res) => res?.payload,
-      );
-    },
-    refetchOnWindowFocus: false,
-  });
 
   const product_schema = generateProductSchema(
     products,
-    productsGallery,
+    productGallery,
     canonical,
   );
 
   const router = useRouter();
-  const [productVariant, setProductVariant] = useState(null);
   const [newURL, setNewURL] = useState(null);
   const [, , , mutateWishList] = useCartContext();
   const [loadingWishlist, setLoadingWishlist] = useState(false);
